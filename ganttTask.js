@@ -74,8 +74,7 @@ function Task(id, name, code, level, start, end, duration, collapsed) {
   this.master;
 
 
-    this.taskType = null; // Initialize taskType property
-this.assigs = [];
+  this.assigs = [];
 }
 
 Task.prototype.clone = function () {
@@ -1229,3 +1228,7 @@ function Role(id, name) {
   this.id = id;
   this.name = name;
 }
+
+
+
+

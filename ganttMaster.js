@@ -425,22 +425,7 @@ GanttMaster.prototype.addTask = function (task, row) {
 
 //trigger addedTask event 
   $(this.element).trigger("addedTask.gantt", task);
-  
-  // Manus: Adiciona os feriados ao objeto do projeto a ser salvo
-  if (this.holidays && Array.isArray(this.holidays)) {
-    ret.holidays = this.holidays.map(function(h_date) {
-      if (h_date instanceof Date && !isNaN(h_date)) {
-        var year = h_date.getUTCFullYear(); // Usa UTC para consistência
-        var month = ('0' + (h_date.getUTCMonth() + 1)).slice(-2); // Meses são 0-indexados
-        var day = ('0' + h_date.getUTCDate()).slice(-2);
-        return year + '-' + month + '-' + day;
-      }
-      return h_date; // Caso não seja um objeto Date válido, retorna como está (improvável)
-    });
-    // console.log("[Manus] Feriados salvos no JSON:", ret.holidays);
-  }
-  // Manus: Fim da adição de feriados para salvar
-return ret;
+  return ret;
 };
 
 
@@ -449,29 +434,6 @@ return ret;
  * @param project
  */
 GanttMaster.prototype.loadProject = function (project) {
-  // Manus: Processa os feriados do projeto carregado
-  if (project.holidays && Array.isArray(project.holidays)) {
-    this.holidays = project.holidays.map(function(h_date_str) {
-      // Garante que a string de data seja tratada como UTC para evitar problemas de fuso.
-      // Adiciona 'T00:00:00Z' para indicar UTC.
-      if (typeof h_date_str === 'string') {
-        // Verifica se já tem informação de tempo/fuso, senão adiciona.
-        if (h_date_str.includes('T')) {
-            return new Date(h_date_str);
-        } else {
-            return new Date(h_date_str + 'T00:00:00Z');
-        }
-      } else if (h_date_str instanceof Date) {
-        return h_date_str; // Se já for Date, usa diretamente
-      }
-      return null; // Retorna null para entradas inválidas
-    }).filter(function(d) { return d instanceof Date && !isNaN(d); }); // Filtra nulos ou datas inválidas
-    // console.log("[Manus] Feriados carregados em GanttMaster:", this.holidays);
-  } else {
-    this.holidays = []; // Inicializa como array vazio se não houver feriados
-  }
-  // Manus: Fim do processamento de feriados
-
   //console.debug("loadProject", project)
   this.beginTransaction();
   this.serverClientTimeOffset = typeof project.serverTimeOffset !="undefined"? (parseInt(project.serverTimeOffset) + new Date().getTimezoneOffset() * 60000) : 0;
@@ -1685,7 +1647,7 @@ GanttMaster.prototype.manageSaveRequired=function(ev, showSave) {
   function checkChanges() {
     var changes = false;
     //there is somethin in the redo stack?
-    if (self.__undoStack && self.__undoStack.length > 0) {
+    if (self.__undoStack.length > 0) {
       var oldProject = JSON.parse(self.__undoStack[0]);
       //si looppano i "nuovi" task
       for (var i = 0; !changes && i < self.tasks.length; i++) {

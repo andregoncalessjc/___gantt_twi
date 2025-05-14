@@ -104,18 +104,6 @@ GridEditor.prototype.addTask = function (task, row, hideIfParentCollapsed) {
   //save row element on task
   task.rowElement = taskRow;
 
-  // Manus: Adicionado para popular o select Tp Atividade na criação da tarefa
-  var taskTypeSelect = taskRow.find("select[name='taskType']");
-  console.log("[addTask] Tentando popular select para tarefa:", task.id, "Elemento select:", taskTypeSelect);
-  if (typeof populateTaskTypeSelect === 'function') {
-    populateTaskTypeSelect(taskTypeSelect, task.taskType); // Popula e seleciona o valor de task.taskType
-    console.log("[addTask] Select populado para tarefa:", task.id, "Valor task.taskType:", task.taskType);
-  } else {
-    console.error("[addTask] Função populateTaskTypeSelect não encontrada. Verifique se está definida em gantt.html.");
-  }
-  // Fim da adição Manus
-
-  
   this.bindRowEvents(task, taskRow);
 
   if (typeof(row) != "number") {
@@ -192,17 +180,6 @@ GridEditor.prototype.refreshTaskRow = function (task) {
 
 
   //Enhancing the function to perform own operations
-      
-  // Manus: Adicionado para atualizar o select Tp Atividade ao redesenhar a linha
-  var taskTypeSelectRefresh = row.find("select[name='taskType']");
-  console.log("[refreshTaskRow] Tentando popular select para tarefa:", task.id, "Elemento select:", taskTypeSelectRefresh);
-  if (typeof populateTaskTypeSelect === 'function') {
-    populateTaskTypeSelect(taskTypeSelectRefresh, task.taskType);
-    console.log("[refreshTaskRow] Select populado para tarefa:", task.id, "Valor task.taskType:", task.taskType);
-  } else {
-    console.error("[refreshTaskRow] Função populateTaskTypeSelect não encontrada durante refreshTaskRow.");
-  }
-  // Fim da adição Manus
   this.master.element.trigger('gantt.task.afterupdate.event', task);
   //profiler.stop();
 };
@@ -358,28 +335,6 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     }
 
   });
-
-  // Manus: Adicionado para lidar com a mudança no select Tp Atividade
-  taskRow.find("select[name='taskType']").change(function () {
-    var el = $(this);
-    var row = el.closest("tr");
-    var taskId = row.attr("taskId");
-    var task = self.master.getTask(taskId);
-
-    if (task) {
-      var selectedValue = el.val();
-      // O valor do select será o ID do tipo de tarefa (ex: 14, 17)
-      // Converte para inteiro se não for uma string vazia, caso contrário, nulo.
-      task.taskType = selectedValue ? parseInt(selectedValue, 10) : null;
-      // console.log("Tp Atividade alterado para tarefa " + taskId + ":", task.taskType); // Para depuração
-
-      // Exemplo de como registrar a alteração para undo/redo (descomente e adapte se necessário):
-      // self.master.beginTransaction();
-      // self.master.changedTask(task); // Ou uma função mais específica para notificar a alteração do campo
-      // self.master.endTransaction();
-    }
-  });
-  // Fim da adição Manus
 
 
   //binding on blur for task update (date exluded as click on calendar blur and then focus, so will always return false, its called refreshing the task row)
