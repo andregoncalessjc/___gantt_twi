@@ -1647,6 +1647,9 @@ GanttMaster.prototype.manageSaveRequired=function(ev, showSave) {
   function checkChanges() {
     var changes = false;
     //there is somethin in the redo stack?
+    if( typeof(self.__undoStack) == 'undefined' )
+      self.__undoStack=[];
+
     if (self.__undoStack.length > 0) {
       var oldProject = JSON.parse(self.__undoStack[0]);
       //si looppano i "nuovi" task
@@ -1670,6 +1673,7 @@ GanttMaster.prototype.manageSaveRequired=function(ev, showSave) {
         }
       }
     }
+
     $("#LOG_CHANGES_CONTAINER").css("display", changes ? "inline-block" : "none");
   }
 
