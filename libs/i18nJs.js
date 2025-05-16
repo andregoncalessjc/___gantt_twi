@@ -126,7 +126,7 @@ Number.currencyFormat = "###,##0.00";
 var millisInWorkingDay =28800000;
 var workingDaysPerWeek =5;
 
-function isHoliday(date) {
+function isHoliday( date ) {
   var friIsHoly =false;  // Sexta-feira é um dia útil (não é feriado)
   var satIsHoly =true;   // Sábado é considerado feriado (não útil)
   var sunIsHoly =true;   // Domingo é considerado feriado (não útil)
@@ -140,11 +140,11 @@ function isHoliday(date) {
   
   // Verificar se a data está na lista de feriados definida no projeto
   // Esta é a nova funcionalidade adicionada para tratar os feriados da mesma forma que os finais de semana
-  if (typeof ge !== 'undefined' && ge.loadedProject && ge.loadedProject.holidays) {
+  if (typeof ge !== 'undefined' && ge.holidays) {
     // Formata a data no mesmo formato usado na lista de feriados (YYYY-MM-DD)
     var dateStr = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
     // Verifica se a data formatada está na lista de feriados
-    if (ge.loadedProject.holidays.indexOf(dateStr) > -1) {
+    if (ge.holidays.indexOf(dateStr) > -1) {
       return true; // É um feriado, retorna true imediatamente
     }
   }

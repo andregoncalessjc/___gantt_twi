@@ -22,6 +22,7 @@
  */
 function GanttMaster() {
   this.tasks = [];
+  this.holidays = [];
   this.deletedTaskIds = [];
   this.links = [];
 
@@ -439,6 +440,7 @@ GanttMaster.prototype.loadProject = function (project) {
   this.serverClientTimeOffset = typeof project.serverTimeOffset !="undefined"? (parseInt(project.serverTimeOffset) + new Date().getTimezoneOffset() * 60000) : 0;
   this.resources = project.resources;
   this.roles = project.roles;
+  this.holidays = project.holidays || [];  // Adiciona os feriados do JSON
 
   //permissions from loaded project
   this.permissions.canWrite = project.canWrite;
