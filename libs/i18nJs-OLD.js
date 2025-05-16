@@ -127,9 +127,9 @@ var millisInWorkingDay =28800000;
 var workingDaysPerWeek =5;
 
 function isHoliday(date) {
-  var friIsHoly =false;  // Sexta-feira é um dia útil (não é feriado)
-  var satIsHoly =true;   // Sábado é considerado feriado (não útil)
-  var sunIsHoly =true;   // Domingo é considerado feriado (não útil)
+  var friIsHoly =false;
+  var satIsHoly =true;
+  var sunIsHoly =true;
 
   var pad = function (val) {
     val = "0" + val;
@@ -137,25 +137,12 @@ function isHoliday(date) {
   };
 
   var holidays = "##";
-  
-  // Verificar se a data está na lista de feriados definida no projeto
-  // Esta é a nova funcionalidade adicionada para tratar os feriados da mesma forma que os finais de semana
-  if (typeof ge !== 'undefined' && ge.loadedProject && ge.loadedProject.holidays) {
-    // Formata a data no mesmo formato usado na lista de feriados (YYYY-MM-DD)
-    var dateStr = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
-    // Verifica se a data formatada está na lista de feriados
-    if (ge.loadedProject.holidays.indexOf(dateStr) > -1) {
-      return true; // É um feriado, retorna true imediatamente
-    }
-  }
 
-  // Verificação original para feriados específicos e finais de semana
   var ymd = "#" + date.getFullYear() + "_" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
   var md = "#" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
   var day = date.getDay();
 
-  // Retorna true se for sexta (e friIsHoly=true) ou sábado ou domingo ou um feriado específico
-  return (day == 5 && friIsHoly) || (day == 6 && satIsHoly) || (day == 0 && sunIsHoly) || holidays.indexOf(ymd) > -1 || holidays.indexOf(md) > -1;
+  return  (day == 5 && friIsHoly) || (day == 6 && satIsHoly) || (day == 0 && sunIsHoly) || holidays.indexOf(ymd) > -1 || holidays.indexOf(md) > -1;
 }
 
 
