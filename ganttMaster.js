@@ -22,7 +22,13 @@
  */
 function GanttMaster() {
   this.tasks = [];
-  this.holidays = [];
+
+  // Dias trabalhados ou NÃO trabalhados
+  this.calendarHolidays = [];
+  this.calendarWorkdayInHoliday = [];
+  this.calendarDontWorkInSaturday = false;
+  this.calendarDontWorkInSunday = false;
+
   this.deletedTaskIds = [];
   this.links = [];
 
@@ -440,7 +446,12 @@ GanttMaster.prototype.loadProject = function (project) {
   this.serverClientTimeOffset = typeof project.serverTimeOffset !="undefined"? (parseInt(project.serverTimeOffset) + new Date().getTimezoneOffset() * 60000) : 0;
   this.resources = project.resources;
   this.roles = project.roles;
-  this.holidays = project.holidays || [];  // Adiciona os feriados do JSON
+
+  // Dias trabalhados ou NÃO trabalhados
+  this.calendarHolidays = project.calendarHolidays || [];  // Adiciona os feriados do JSON
+  this.calendarWorkdayInHoliday = project.calendarWorkdayInHoliday || [];  // Adiciona os feriados do JSON
+  this.calendarDontWorkInSaturday = project.calendarDontWorkInSaturday || false;
+  this.calendarDontWorkInSunday   = project.calendarDontWorkInSunday   || false;
 
   //permissions from loaded project
   this.permissions.canWrite = project.canWrite;
@@ -449,9 +460,9 @@ GanttMaster.prototype.loadProject = function (project) {
   this.permissions.cannotCloseTaskIfIssueOpen = project.cannotCloseTaskIfIssueOpen;
   this.permissions.canAddIssue = project.canAddIssue;
   this.permissions.canDelete = project.canDelete;
+
   //repaint button bar basing on permissions
   this.checkButtonPermissions();
-
 
 
   if (project.minEditableDate)

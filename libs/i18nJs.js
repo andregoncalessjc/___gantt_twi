@@ -127,35 +127,39 @@ var millisInWorkingDay =28800000;
 var workingDaysPerWeek =5;
 
 function isHoliday( date ) {
-  var friIsHoly =false;  // Sexta-feira é um dia útil (não é feriado)
-  var satIsHoly =true;   // Sábado é considerado feriado (não útil)
-  var sunIsHoly =true;   // Domingo é considerado feriado (não útil)
+  // Dia da semana
+  var day = date.getDay();
+  // Formata a data no mesmo formato usado na lista de feriados (YYYY-MM-DD)
+  var dateStr = date.toISOString().split('T')[0];
 
-  var pad = function (val) {
-    val = "0" + val;
-    return val.substr(val.length - 2);
-  };
-
-  var holidays = "##";
-  
-  // Verificar se a data está na lista de feriados definida no projeto
-  // Esta é a nova funcionalidade adicionada para tratar os feriados da mesma forma que os finais de semana
-  if (typeof ge !== 'undefined' && ge.holidays) {
-    // Formata a data no mesmo formato usado na lista de feriados (YYYY-MM-DD)
-    var dateStr = date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+  // Verificar se a data está na lista de sábado ou domingo trabalhado
+  if (typeof ge !== 'undefined' && typeof ge.calendarWorkdayInHoliday !== 'undefined' ) {
     // Verifica se a data formatada está na lista de feriados
-    if (ge.holidays.indexOf(dateStr) > -1) {
+    if (ge.calendarWorkdayInHoliday.indexOf(dateStr) > -1) {
+      return false; // Se o dia está na lista, retorna false imediatamente
+    }
+  }
+
+  // Verificar se a data está na lista de feriados definida no projeto
+  if (typeof ge !== 'undefined' && typeof ge.calendarHolidays !== 'undefined') {
+    // Verifica se a data formatada está na lista de feriados
+    if (ge.calendarHolidays.indexOf(dateStr) > -1) {
       return true; // É um feriado, retorna true imediatamente
     }
   }
 
-  // Verificação original para feriados específicos e finais de semana
-  var ymd = "#" + date.getFullYear() + "_" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
-  var md = "#" + pad(date.getMonth() + 1) + "_" + pad(date.getDate()) + "#";
-  var day = date.getDay();
+  // Sábado
+  if(day == 6 ){
+    return (typeof ge !== 'undefined' && typeof ge.calendarDontWorkInSaturday !== 'undefined' )?( ge.calendarDontWorkInSaturday ):true;
+  }
+  // Domingo
+  else if(day == 0 ){
+    return (typeof ge !== 'undefined' && typeof ge.calendarDontWorkInSunday   !== 'undefined' )?( ge.calendarDontWorkInSunday   ):true;
+  }
+  else{
+    return false;
+  }
 
-  // Retorna true se for sexta (e friIsHoly=true) ou sábado ou domingo ou um feriado específico
-  return (day == 5 && friIsHoly) || (day == 6 && satIsHoly) || (day == 0 && sunIsHoly) || holidays.indexOf(ymd) > -1 || holidays.indexOf(md) > -1;
 }
 
 
@@ -179,7 +183,7 @@ var i18n = {
   UPLOAD_ABORTED:"Upload aborted",
   DROP_HERE:"Drop files here",
 
-  FORM_IS_CHANGED:     "You have some unsaved data on the page!",
+  FORM_IS_CHANGED: "You have some unsaved data on the page!",
 
   PIN_THIS_MENU: "PIN_THIS_MENU",
   UNPIN_THIS_MENU: "UNPIN_THIS_MENU",

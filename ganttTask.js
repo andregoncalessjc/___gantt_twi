@@ -535,7 +535,8 @@ Task.prototype.changeStatus = function (newStatus,forceStatusCheck) {
       //  STATUS_WAITING -> STATUS_ACTIVE         sets to active all children and their descendants that have no inhibiting dependencies.
       //  STATUS_DONE -> STATUS_ACTIVE            all those that have dependencies must be set to suspended.
       //  STATUS_FAILED -> STATUS_ACTIVE          nothing happens: child statuses must be reset by hand.
-    } else if (newStatus == "STATUS_ACTIVE") {
+    }
+    else if (newStatus == "STATUS_ACTIVE") {
 
       if (manuallyChanged || (oldStatus != "STATUS_FAILED" && oldStatus != "STATUS_SUSPENDED")) { //cannot set failed or suspended task as active for cascade - only if changed manually
 
@@ -576,7 +577,8 @@ Task.prototype.changeStatus = function (newStatus,forceStatusCheck) {
       }
 
       // xxxx -> STATUS_WAITING       all active children and their active descendants become waiting. when not failed or forced
-    } else if (newStatus == "STATUS_WAITING" ) {
+    }
+    else if (newStatus == "STATUS_WAITING" ) {
       if (manuallyChanged || oldStatus != "STATUS_FAILED") { //cannot set failed task as waiting for cascade - only if changed manually
 
         //check if parent if not active
@@ -636,6 +638,10 @@ Task.prototype.changeStatus = function (newStatus,forceStatusCheck) {
 
     return todoOk;
   }
+
+
+
+
 
   /**
    * A helper method to traverse an array of 'inferior' tasks
